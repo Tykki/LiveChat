@@ -11,8 +11,9 @@
 		<div class="jumbotron">
 			<h1 class="display-4">Send Message</h1>
 			<br>
-			<input placeholder="Name" class="form-control">
+			<input id="name" placeholder="Name" class="form-control">
 			<br>
+			<textarea id="message" name="Message" class="form-control" placeholder="Message"></textarea>
 			<button id="send" class="btn btn-success">Send</button>
 		</div>
 		<div id="messages">
@@ -25,17 +26,33 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-
+	<script src="/socket.io/socket.io.js"></script>
 	<script>
+		const socket = io()
 		$(()=>{
 			$('#send').click(()=>{
-			addMess({name: '2Pac', message: 'Savage'})
+			let mess = {name: $('#name').val(), message: $('#message').val()}
+			postMess(mess)
 				
 			})
+			getMess()
+			
 		})
+
+		socket.on('message', addMess)
 
 		function addMess(mess){
 			$('#messages').append(`<h4>${mess.name} </h4> <p>${mess.message}</p> `)
+		}
+
+		function getMess(){
+			$.get('http://localhost:3000/messages', data => {
+				data.forEach(addMess)
+			})
+		}
+
+		function postMess(mess){
+			$.post('http://localhost:3000/messages', mess)
 		}
 	</script>
 </body>
