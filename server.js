@@ -18,6 +18,13 @@ const Message = mon.model('Message', {
 })
 
 app.get('/messages', (req, res) => {
+	Message.find({}, (err, mess) => {
+		res.send(mess)
+		
+	})
+})
+
+app.get('/messages/:user', (req, res) => {
 	let user = req.params.user
 	Message.find({name: user}, (err, mess) => {
 		res.send(mess)
